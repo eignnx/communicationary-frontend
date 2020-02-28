@@ -1,4 +1,4 @@
-# frontend
+# communicationary-frontend
 
 ## Project setup
 ```
