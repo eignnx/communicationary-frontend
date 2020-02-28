@@ -3,15 +3,11 @@
     <h1>PLAY PAGE</h1>
     <div class="messages">
       <div class="message-row" v-for="(row, idx) in rows" :key="idx">
-        <span v-for="(word, idx) in row" :key="idx" class="word-span">
-          {{ word }}
-        </span>
+        <span v-for="(word, idx) in row" :key="idx" class="word-span">{{ word }}</span>
       </div>
     </div>
     <div class="button-array">
-      <button v-for="word in words" :key="word" @click="sendMessage(word)">
-        {{ word }}
-      </button>
+      <button v-for="word in words" :key="word" @click="sendMessage(word)">{{ word }}</button>
       <button @click="sendMessage('↩️')">RETURN ↩️</button>
     </div>
   </section>
@@ -32,10 +28,11 @@ export default {
 
     const sid = this.$route.query.sessionId;
     const cid = this.$route.query.clientId;
-    const address =
+    const host =
       process.env.NODE_ENV !== "production"
-        ? `ws://localhost:3000/session/${sid}/${cid}`
-        : `wss://${document.location.host}/session/${sid}/${cid}`;
+        ? "ws://localhost:3000"
+        : "wss://communicationary.herokuapp.com";
+    const address = `${host}/session/${sid}/${cid}`;
 
     const ws = new WebSocket(address);
 
