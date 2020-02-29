@@ -2,16 +2,20 @@
   <section>
     <h1>PLAY COMMUNICATIONARY</h1>
     <section class="info-section">
-      <p>Session: {{$route.query.sessionId}}</p>
-      <p>Username: {{$route.query.clientId}}</p>
+      <p>Session: {{ $route.query.sessionId }}</p>
+      <p>Username: {{ $route.query.clientId }}</p>
     </section>
     <section class="button-array">
-      <button v-for="word in words" :key="word" @click="sendMessage(word)">{{ word }}</button>
+      <button v-for="word in words" :key="word" @click="sendMessage(word)">
+        {{ word }}
+      </button>
       <button @click="sendMessage('↩️')">RETURN ↩️</button>
     </section>
     <section class="messages">
       <div class="message-row" v-for="(row, idx) in rows" :key="idx">
-        <span v-for="(word, idx) in row" :key="idx" class="word-span">{{ word }}</span>
+        <span v-for="(word, idx) in row" :key="idx" class="word-span">{{
+          word
+        }}</span>
       </div>
     </section>
   </section>
@@ -29,8 +33,6 @@ export default {
   }),
 
   created() {
-    this.words = generateWords(0.1);
-
     const sid = this.$route.query.sessionId;
     const cid = this.$route.query.clientId;
     const address = `${BACKEND_HOST_WS}/session/${sid}/${cid}`;
@@ -45,6 +47,8 @@ export default {
       }
     };
 
+    const seed = sid;
+    this.words = generateWords(0.1, seed);
     this.ws = ws;
   },
 
