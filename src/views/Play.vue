@@ -1,20 +1,25 @@
 <template>
   <section>
-    <h1>PLAY PAGE</h1>
-    <div class="messages">
+    <h1>PLAY COMMUNICATIONARY</h1>
+    <section class="info-section">
+      <p>Session: {{$route.query.sessionId}}</p>
+      <p>Username: {{$route.query.clientId}}</p>
+    </section>
+    <section class="button-array">
+      <button v-for="word in words" :key="word" @click="sendMessage(word)">{{ word }}</button>
+      <button @click="sendMessage('↩️')">RETURN ↩️</button>
+    </section>
+    <section class="messages">
       <div class="message-row" v-for="(row, idx) in rows" :key="idx">
         <span v-for="(word, idx) in row" :key="idx" class="word-span">{{ word }}</span>
       </div>
-    </div>
-    <div class="button-array">
-      <button v-for="word in words" :key="word" @click="sendMessage(word)">{{ word }}</button>
-      <button @click="sendMessage('↩️')">RETURN ↩️</button>
-    </div>
+    </section>
   </section>
 </template>
 
 <script>
-import { generateWords } from "@/words.js";
+import { generateWords } from "@/utils/words.js";
+import { BACKEND_HOST_WS } from "@/utils/env.js";
 
 export default {
   data: () => ({
@@ -28,17 +33,13 @@ export default {
 
     const sid = this.$route.query.sessionId;
     const cid = this.$route.query.clientId;
-    const host =
-      process.env.NODE_ENV !== "production"
-        ? "ws://localhost:3000"
-        : "wss://communicationary.herokuapp.com";
-    const address = `${host}/session/${sid}/${cid}`;
-
+    const address = `${BACKEND_HOST_WS}/session/${sid}/${cid}`;
     const ws = new WebSocket(address);
 
     ws.onmessage = event => {
       const word = event.data;
-      this.rows[this.rows.length - 1].push(word);
+      const lastRow = this.rows[this.rows.length - 1];
+      lastRow.push(word);
       if (word == "↩️") {
         this.rows.push([]);
       }
@@ -56,6 +57,12 @@ export default {
 </script>
 
 <style>
+.info-section {
+  font-weight: bolder;
+  font-style: italic;
+  font-variant-caps: all-small-caps;
+}
+
 .word-span {
   border: 0.3ch solid rgb(215, 187, 226);
   border-radius: 0.5ch;
@@ -76,11 +83,13 @@ export default {
 }
 
 .button-array {
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: auto;
+  grid-gap: 1.5rem;
 }
 
 .button-array > button {
-  margin: 0.1rem;
+  padding: 0.5rem;
 }
 </style>
