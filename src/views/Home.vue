@@ -13,8 +13,8 @@ export default {
   name: "Home",
 
   methods: {
-    async getSessionId() {
-      const addr = `${BACKEND_HOST_HTTP}/find-session`;
+    async getSessionId(clientId) {
+      const addr = `${BACKEND_HOST_HTTP}/find-session/${clientId}`;
       const resp = await fetch(addr, { method: "POST" });
       const { sessionId } = await resp.json();
       return sessionId;
@@ -22,7 +22,7 @@ export default {
 
     async joinGame(username) {
       const clientId = username;
-      const sessionId = await this.getSessionId();
+      const sessionId = await this.getSessionId(username);
       this.$router.push({
         path: "play",
         query: { sessionId, clientId }
